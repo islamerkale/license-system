@@ -1,29 +1,34 @@
 <?php
-// check_license.php (Sizin sunucunuzda çalışacak)
+// check_license.php - GitHub Pages için
 header('Content-Type: text/plain');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET');
 
-if (empty($_GET['license_key'])) {
-    http_response_code(400);
-    echo 'INVALID';
-    exit;
-}
+// GitHub Pages PHP çalıştırmaz, bu yüzden mock (sahte) response dönecek
+// Gerçek sistemde bu veritabanından kontrol edilecek
 
-$licenseKey = $_GET['license_key'];
+$licenseKey = $_GET['license_key'] ?? '';
 
-// Burada veritabanı bağlantısı yapılacak
-$pdo = new PDO('mysql:host=localhost;dbname=your_license_db', 'db_user', 'db_pass');
-$stmt = $pdo->prepare("SELECT expiry_date FROM licenses WHERE license_key = ? AND status = 'active'");
-$stmt->execute([$licenseKey]);
-$license = $stmt->fetch();
-
-if ($license) {
-    if (strtotime($license['expiry_date']) > time()) {
+// Mock lisans kontrolü - HER ZAMAN VALID dön (şimdilik)
+if (!empty($licenseKey)) {
+    echo 'VALID';
+    
+    // Gerçek sistem için örnek kod:
+    /*
+    $validLicenses = [
+        'abc123licensekey',
+        'def456anotherkey'
+    ];
+    
+    if (in_array($licenseKey, $validLicenses)) {
         echo 'VALID';
     } else {
-        echo 'EXPIRED';
+        http_response_code(404);
+        echo 'INVALID';
     }
+    */
 } else {
-    http_response_code(404);
+    http_response_code(400);
     echo 'INVALID';
 }
 ?>
